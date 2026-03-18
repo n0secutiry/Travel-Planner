@@ -1,15 +1,31 @@
-import asyncio
-import aiohttp
+import httpx
+from fastapi import HTTPException
 
 
-async def get_data_api(city: str):
+ARTIC_API_BASE = "https://api.artic.edu/api/v1"
 
-    url = f"https://api.artic.edu/api/v1/artworks/search?q={city}"
 
-    async with aiohttp.ClientSession() as session:
-        async with session.get(url) as response:
-            print(f"--- Response status -> {response.status} ---")
-            return await response.json()
+async def check_place_exists(external_id: int) -> bool:
+    url = f"{ARTIC_API_BASE}/artworks/{external_id}"
+    async with httpx.AsyncClient() as client:
+        response = await client.get(url)
+        if response.status_code == 200:
+            data = response.json()
+            return True, data.get("title", "Unknown")
+        else:
+            return False, None
 
-if __name__ == "__main__":
-    print(asyncio.run(get_data_api("Paris")))
+
+async def fetch_place_data(external_id: int):
+    url = f"{ARTIC_API_BASE}/artworks/{external_id}"
+    async with httpx.AsyncClient() as client:
+        response = await client.get(url)
+        if response.status_code != 200:
+            raise HTTPException(
+                status_code=400, detail="Place not found in external API")
+        data = response.json()
+        return {
+            "external_id": external_id,
+            "title": data.get("title", "Unknown"),
+            "api_data": data
+        }
