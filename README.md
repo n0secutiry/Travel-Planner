@@ -34,10 +34,9 @@ A RESTful API for managing travel projects, places (fetched from the Art Institu
 1. Clone the repository:
    ```bash
    git clone https://github.com/n0secutiry/Travel-Planner
-   cd Travel-Planner
-```
+   cd Travel-Planner```
 
 2. Start project:
-   ```bash
+```bash
 docker-compose up --build
-   ```
+```
