@@ -4,7 +4,7 @@ import aiohttp
 
 async def get_data_api(city: str):
 
-    url = f"https://api.artic.edu/api/v1/places/search?q={city}"
+    url = f"https://api.artic.edu/api/v1/artworks/search?q={city}"
 
     async with aiohttp.ClientSession() as session:
         async with session.get(url) as response:
